@@ -1,6 +1,10 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using SkiaSharp;
 using SkiaUI.Core;
+using Svg.Skia;
 
 namespace SkiaUI.Gtk;
 
@@ -11,9 +15,21 @@ public class SkiaAppExample : ISkiaApp
     public Func<object, object> HostCallback { get; set; }
 
     private readonly SKFont fontDefault;
+    private readonly SKFont fontLabel;
     private readonly SKPaint paintBlack;
     private readonly SKPaint paintWhite;
+    private readonly SKPaint paintOverlay;
+    private readonly List<AssetItem> assets = new List<AssetItem>();
     int eventCounter=0;
+
+    private class AssetItem
+    {
+        public string Name { get; set; } = "";
+        public SKPicture? Picture { get; set; }
+        public SKRect Bounds { get; set; }
+        public float Rotation { get; set; }
+        public float Scale { get; set; }
+    }
 
     public SkiaAppExample()
     {
@@ -27,13 +43,62 @@ public class SkiaAppExample : ISkiaApp
             Color = SKColors.Black,
             Style = SKPaintStyle.Fill
         };
+        paintOverlay = new SKPaint()
+        {
+            Color = new SKColor(0, 255, 255, 60),
+            Style = SKPaintStyle.Fill
+        };
 
-        // https://learn.microsoft.com/en-us/dotnet/api/skiasharp.skfont.-ctor?view=skiasharp-2.88#skiasharp-skfont-ctor(skiasharp-sktypeface-system-single-system-single-system-single).
         var noto = SKTypeface.FromFamilyName("Jetbrains Mono",
                 SKFontStyleWeight.Normal,
                 SKFontStyleWidth.Normal,
                 SKFontStyleSlant.Upright);
         fontDefault = new SKFont(noto, 30);
+        fontLabel = new SKFont(noto, 16);
+
+        LoadAssets();
+    }
+
+    private void LoadAssets()
+    {
+        var assetPath = Path.Combine(AppContext.BaseDirectory, "assets");
+
+        if (!Directory.Exists(assetPath))
+            return;
+
+        var svgFiles = Directory.GetFiles(assetPath, "*.svg");
+
+        var rotations = new float[] { 0, 15, -30, 45, -15 };
+        var scales = new float[] { 1.0f, 0.8f, 1.2f, 0.9f, 1.1f };
+
+        for (int i = 0; i < svgFiles.Length; i++)
+        {
+            SKPicture? picture = null;
+            SKRect bounds = SKRect.Empty;
+
+            try
+            {
+                var svg = new SKSvg();
+                picture = svg.Load(svgFiles[i]);
+                if (picture != null)
+                {
+                    bounds = picture.CullRect;
+                }
+            }
+            catch
+            {
+                // Skip files that can't be loaded
+            }
+
+            assets.Add(new AssetItem
+            {
+                Name = Path.GetFileNameWithoutExtension(svgFiles[i]),
+                Picture = picture,
+                Bounds = bounds,
+                Rotation = rotations[i % rotations.Length],
+                Scale = scales[i % scales.Length]
+            });
+        }
     }
 
     public bool HandleAppEvent(object app)
@@ -41,7 +106,6 @@ public class SkiaAppExample : ISkiaApp
         Console.WriteLine($"{eventCounter++}:HandleAppEvent {app}");
         return true;
     }
-
 
     public void HandleKeyPress(SkiaAppKey key)
     {
@@ -56,13 +120,60 @@ public class SkiaAppExample : ISkiaApp
 
     public void Paint(SKSurface surface)
     {
-        surface.Canvas.Clear();
+        surface.Canvas.Clear(SKColors.White);
         FrameCount++;
 
         var txt  = $"Frame {FrameCount}. Elapsed: {Elapsed:hh\\:mm\\:ss}";
         surface.Canvas.DrawText(txt, fontDefault.Size, fontDefault.Size, fontDefault, paintBlack);
 
+        int cols = 3;
+        int cellWidth = 200;
+        int cellHeight = 200;
+        int startX = 50;
+        int startY = 80;
 
+        for (int i = 0; i < assets.Count; i++)
+        {
+            var asset = assets[i];
+            int col = i % cols;
+            int row = i / cols;
+
+            float x = startX + col * (cellWidth + 40);
+            float y = startY + row * (cellHeight + 80);
+
+            surface.Canvas.Save();
+            surface.Canvas.Translate(x + cellWidth / 2, y + cellHeight / 2);
+            surface.Canvas.RotateDegrees(asset.Rotation);
+            surface.Canvas.Scale(asset.Scale);
+
+            if (asset.Picture != null && !asset.Bounds.IsEmpty)
+            {
+                var svgWidth = asset.Bounds.Width;
+                var svgHeight = asset.Bounds.Height;
+
+                if (svgWidth > 0 && svgHeight > 0)
+                {
+                    float scaleX = (cellWidth * 0.7f) / svgWidth;
+                    float scaleY = (cellHeight * 0.7f) / svgHeight;
+                    float scale = Math.Min(scaleX, scaleY);
+
+                    surface.Canvas.Scale(scale);
+                    surface.Canvas.Translate(-svgWidth / 2, -svgHeight / 2);
+
+                    surface.Canvas.DrawPicture(asset.Picture);
+
+                    var rect = new SKRect(0, 0, svgWidth, svgHeight);
+                    surface.Canvas.DrawRect(rect, paintOverlay);
+                }
+            }
+
+            surface.Canvas.Restore();
+
+            var labelX = x + cellWidth / 2;
+            var labelY = y + cellHeight + 20;
+            var textWidth = fontLabel.MeasureText(asset.Name);
+            surface.Canvas.DrawText(asset.Name, labelX - textWidth / 2, labelY, fontLabel, paintBlack);
+        }
     }
 
     public object SendHost(object obj)
