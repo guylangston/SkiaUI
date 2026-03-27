@@ -23,11 +23,10 @@ public class MainWindow : Window
         this.skiaApp = app;
 
         this.DeleteEvent += Window_DeleteEvent;
-        this.KeyPressEvent += Window_OnKeyPress;
         this.ButtonPressEvent += Window_OnButtonPress;
+        this.KeyPressEvent += Window_OnKeyPress;
 
         builder.Autoconnect(this);
-
 
         skiaView               = new SKDrawingArea();
         skiaView.CanFocus      = false;
@@ -65,18 +64,13 @@ public class MainWindow : Window
         };
     }
 
-    [GLib.ConnectBefore]
     private void Window_OnButtonPress(object o, ButtonPressEventArgs args)
     {
-        args.Event.SendEvent = false;
         skiaApp.HandleMousePress(Convert(args));
     }
 
-    [GLib.ConnectBefore]
     private void Window_OnKeyPress(object o, KeyPressEventArgs args)
     {
-        // Not sure why, but we always get two calls to KeyPress
-        // May no Up/Down, but I don't see any flags for that
         skiaApp.HandleKeyPress(Convert(args));
     }
 

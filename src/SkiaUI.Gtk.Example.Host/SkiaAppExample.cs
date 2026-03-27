@@ -40,15 +40,17 @@ public class SkiaAppExample : ISkiaApp
         return true;
     }
 
+    int cc=0;
+
     public void HandleKeyPress(SkiaAppKey key)
     {
+        Console.WriteLine($"{cc++}:HandleKeyPress {key.Key}");
         if (key.Key == "q") SendHost("Quit");
-        Console.WriteLine(key.Key);
     }
 
     public void HandleMousePress(SkiaAppMouse mouse)
     {
-        Console.WriteLine($"X:{mouse.X}, Y:{mouse.Y} Btn:{mouse.Button}[{mouse.Type}]");
+        Console.WriteLine($"{cc++}:HandleMousePress X:{mouse.X}, Y:{mouse.Y} Btn:{mouse.Button}[{mouse.Type}]");
     }
 
     public void Paint(SKSurface surface)
