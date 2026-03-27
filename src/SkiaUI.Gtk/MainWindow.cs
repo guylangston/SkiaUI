@@ -67,11 +67,13 @@ public class MainWindow : Window
     private void Window_OnButtonPress(object o, ButtonPressEventArgs args)
     {
         skiaApp.HandleMousePress(Convert(args));
+        args.RetVal = true; // mark event has handled
     }
 
     private void Window_OnKeyPress(object o, KeyPressEventArgs args)
     {
         skiaApp.HandleKeyPress(Convert(args));
+        args.RetVal = true; // mark event has handled
     }
 
     private void Window_DeleteEvent(object sender, DeleteEventArgs a)
