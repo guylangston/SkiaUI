@@ -91,7 +91,7 @@ public class MainWindow : Window
         return true;
     }
 
-    private void OnPaintSurface(object sender, SKPaintSurfaceEventArgs e)
+    private void OnPaintSurface(object? sender, SKPaintSurfaceEventArgs e)
     {
         skiaApp.Paint(e.Surface);
     }
