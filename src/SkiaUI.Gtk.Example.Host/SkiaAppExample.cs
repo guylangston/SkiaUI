@@ -29,7 +29,7 @@ public class SkiaAppExample : ISkiaApp
         };
 
         // https://learn.microsoft.com/en-us/dotnet/api/skiasharp.skfont.-ctor?view=skiasharp-2.88#skiasharp-skfont-ctor(skiasharp-sktypeface-system-single-system-single-system-single).
-        var noto = SKTypeface.FromFamilyName("Noto Sans",
+        var noto = SKTypeface.FromFamilyName("Jetbrains Mono",
                 SKFontStyleWeight.Normal,
                 SKFontStyleWidth.Normal,
                 SKFontStyleSlant.Upright);
@@ -38,6 +38,7 @@ public class SkiaAppExample : ISkiaApp
 
     public bool HandleAppEvent(object app)
     {
+        Console.WriteLine($"{eventCounter++}:HandleAppEvent {app}");
         return true;
     }
 
@@ -58,12 +59,15 @@ public class SkiaAppExample : ISkiaApp
         surface.Canvas.Clear();
         FrameCount++;
 
-        var txt  = $"[Frame {FrameCount}. Elapsed: {Elapsed:hh\\:mm\\:ss} -- Hello World";
+        var txt  = $"Frame {FrameCount}. Elapsed: {Elapsed:hh\\:mm\\:ss}";
         surface.Canvas.DrawText(txt, fontDefault.Size, fontDefault.Size, fontDefault, paintBlack);
+
+
     }
 
     public object SendHost(object obj)
     {
+        Console.WriteLine($"{eventCounter++}:SendHost {obj}");
         return HostCallback(obj.ToString());
     }
 
