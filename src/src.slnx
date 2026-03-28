@@ -2,4 +2,5 @@
   <Project Path="SkiaUI.Core/SkiaUI.Core.csproj" />
   <Project Path="SkiaUI.Gtk.Example.Host/SkiaUI.Gtk.Example.Host.csproj" />
   <Project Path="SkiaUI.Gtk/SkiaUI.Gtk.csproj" />
+  <Project Path="SkiaUI.Tests/SkiaUI.Tests.csproj" />
 </Solution>
