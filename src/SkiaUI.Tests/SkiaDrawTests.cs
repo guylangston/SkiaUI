@@ -44,8 +44,8 @@ public class SkiaDrawToFile : TestAssetHelper
     [Fact]
     public void CanDrawAssets()
     {
-        int width = 320;
-        int height = 200;
+        int width = 640;
+        int height = 320;
 
         using var surface = SKSurface.Create(new SKImageInfo(width, height));
         var canvas = surface.Canvas;
