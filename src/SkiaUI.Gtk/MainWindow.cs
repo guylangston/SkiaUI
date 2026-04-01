@@ -28,10 +28,10 @@ public class MainWindow : Window
 
         builder.Autoconnect(this);
 
-        skiaView               = new SKDrawingArea();
-        skiaView.CanFocus      = false;
-        skiaView.WidthRequest  = 1920;
-        skiaView.HeightRequest = 1080;
+        skiaView = new SKDrawingArea
+        {
+            CanFocus = false
+        };
         skiaView.PaintSurface += OnPaintSurface;
         skiaView.Show();
         Child = skiaView;

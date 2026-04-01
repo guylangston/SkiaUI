@@ -60,6 +60,7 @@ public abstract class SkiaAppCore : ISkiaApp
 
     public virtual void Step(TimeSpan step)
     {
+        FrameCount++;
         Elapsed += step;
     }
 }

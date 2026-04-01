@@ -29,7 +29,9 @@ public interface ISkiaAppCoreLoop
 
 public interface ISkiaAppAssetFactory
 {
+    string GetAssetPath(string file);
     SKPaint GetPaint(string name);
+    SKPicture GetSvg(string name);
     SKFont GetFont(string? name = null);
 }
 

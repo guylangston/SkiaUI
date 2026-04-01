@@ -9,7 +9,7 @@ public interface IPixelTransform
     SKPoint Inverse(SKPoint p);
 }
 
-public class PixelTransformOffset : IPixelTransform
+public struct PixelTransformOffset : IPixelTransform
 {
     SKPoint offset;
 
@@ -23,7 +23,7 @@ public class PixelTransformOffset : IPixelTransform
     public SKPoint Inverse(SKPoint p) => p - offset;
 }
 
-public class PixelTransformCenter : IPixelTransform
+public struct PixelTransformCenter : IPixelTransform
 {
     SKRect rect;
     SKRect client;
