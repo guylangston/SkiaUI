@@ -7,21 +7,25 @@ public abstract class SkiaAppBase : SkiaAppCore
     protected SkiaAppBase(Func<object, object> hostCallback, ISkiaAppAssetFactory assetFactory) : base(hostCallback, assetFactory)
     {
     }
+    public bool IsLogEventsEnabled { get; set; } = true;
 
     public override bool HandleAppEvent(object app)
     {
+        if (!IsLogEventsEnabled) return true;
         WriteLog($"HandleAppEvent {app}");
         return true;
     }
 
     public override void HandleKeyPress(SkiaAppKey key)
     {
+        if (!IsLogEventsEnabled) return;
         WriteLog($"HandleKeyPress {key.Key}");
         if (key.Key == "q") SendHost("Quit");
     }
 
     public override void HandleMousePress(SkiaAppMouse mouse)
     {
+        if (!IsLogEventsEnabled) return;
         WriteLog($"HandleMousePress X:{mouse.X}, Y:{mouse.Y} Btn:{mouse.Button}[{mouse.Type}]");
     }
 
@@ -41,9 +45,11 @@ public abstract class SkiaAppCore : ISkiaApp
     public ISkiaAppAssetFactory AssetFactory { get; }
     public TimeSpan Elapsed { get; set; }
     public int FrameCount { get; set; }
+    public bool IsLogEnabled { get; set; } = true;
 
     protected void WriteLog(string s)
     {
+        if (!IsLogEnabled) return;
         Console.WriteLine($"{eventCounter++}:{s}");
     }
 

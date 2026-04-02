@@ -36,7 +36,7 @@ public struct PixelTransformCenter : IPixelTransform
 
     public SKPoint Apply(SKPoint p) => p + new SKPoint(rect.MidX, rect.MidY) - new SKPoint(client.MidX, client.MidY);
 
-    public SKPoint Inverse(SKPoint p) => p + new SKPoint(rect.MidX, rect.MidY);
+    public SKPoint Inverse(SKPoint p) => p - new SKPoint(rect.MidX, rect.MidY) + new SKPoint(client.MidX, client.MidY);
 }
 
 
