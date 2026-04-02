@@ -24,17 +24,18 @@ public class MainWindow : Window
 
         this.DeleteEvent += Window_DeleteEvent;
         this.ButtonPressEvent += Window_OnButtonPress;
-        this.KeyPressEvent += Window_OnKeyPress;
 
         builder.Autoconnect(this);
 
         skiaView = new SKDrawingArea
         {
-            CanFocus = false
+            CanFocus = true
         };
         skiaView.PaintSurface += OnPaintSurface;
+        skiaView.KeyPressEvent += Window_OnKeyPress;
         skiaView.Show();
         Child = skiaView;
+        skiaView.GrabFocus();
 
         interval = TimeSpan.FromSeconds(1/60f);
         if (timerId == 0)

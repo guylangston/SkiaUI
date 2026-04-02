@@ -11,22 +11,19 @@ public abstract class SkiaAppBase : SkiaAppCore
 
     public override bool HandleAppEvent(object app)
     {
-        if (!IsLogEventsEnabled) return true;
-        WriteLog($"HandleAppEvent {app}");
+        if (IsLogEventsEnabled) WriteLog($"HandleAppEvent {app}");
         return true;
     }
 
     public override void HandleKeyPress(SkiaAppKey key)
     {
-        if (!IsLogEventsEnabled) return;
-        WriteLog($"HandleKeyPress {key.Key}");
         if (key.Key == "q") SendHost("Quit");
+        if (IsLogEventsEnabled) WriteLog($"HandleKeyPress {key.Key}");
     }
 
     public override void HandleMousePress(SkiaAppMouse mouse)
     {
-        if (!IsLogEventsEnabled) return;
-        WriteLog($"HandleMousePress X:{mouse.X}, Y:{mouse.Y} Btn:{mouse.Button}[{mouse.Type}]");
+        if (IsLogEventsEnabled) WriteLog($"HandleMousePress X:{mouse.X}, Y:{mouse.Y} Btn:{mouse.Button}[{mouse.Type}]");
     }
 
 }
