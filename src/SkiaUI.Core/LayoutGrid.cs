@@ -22,7 +22,7 @@ public class LayoutGrid : ILayoutEnumerable<(int X, int Y)>
 
     public IEnumerable<((int X, int Y) Data, SKRect Location)> ForEach()
     {
-        for(var cy=0; cy<GridWidth; cy++)
+        for(var cy=0; cy<GridHeight; cy++)
         {
             for(var cx=0; cx<GridWidth; cx++)
             {
