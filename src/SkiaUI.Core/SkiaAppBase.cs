@@ -58,7 +58,7 @@ public abstract class SkiaAppCore : ISkiaApp
     public virtual object SendHost(object obj)
     {
         WriteLog($"SendHost {obj}");
-        return HostCallback(obj.ToString());
+        return HostCallback(obj.ToString() ?? "");
     }
 
     public virtual void Step(TimeSpan step)
